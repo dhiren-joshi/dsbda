@@ -1,0 +1,38 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+
+print(df.info())
+print("\nMissing Values:\n", df.isnull().sum())
+print("\nStatistics:\n", df.describe(include='all'))
+
+print("Shape of DataFrame:", df.shape)
+
+print(df.dtypes)
+# Convert 'Pclass', 'Sex', 'Embarked' to category
+df['Pclass'] = df['Pclass'].astype('category')
+df['Sex'] = df['Sex'].astype('category')
+df['Embarked'] = df['Embarked'].astype('category')
+# Confirm changes
+print("\nUpdated Data Types:\n", df.dtypes)
+
+
+# Fill missing 'Age' values with the median
+df['Age'] = df['Age'].fillna(df['Age'].median())
+# Fill missing 'Embarked' values with the mode
+df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
+# Drop 'Cabin' due to high number of missing values
+df.drop(columns=['Cabin'], inplace=True)
+
+print(df.isnull().sum())
+
+
+# Convert 'Sex' and 'Embarked' using one-hot encoding
+df = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=True)
+# 'Pclass' is ordinal, can be left as-is or converted explicitly
+df['Pclass'] = df['Pclass'].astype(int)
+print(df.head())
+

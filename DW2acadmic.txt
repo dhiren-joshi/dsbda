@@ -1,0 +1,63 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+# Create a synthetic dataset
+data = {
+ 'StudentID': range(1, 11),
+ 'Name': ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Hannah', 'Ian', 'Jane'],
+ 'Gender': ['F', 'M', 'M', 'M', 'F', 'M', 'F', 'F', 'M', 'F'],
+ 'Age': [17, 16, np.nan, 17, 16, 15, 16, 15, 14, 17],
+ 'Hours_Studied': [15, 10, 5, np.nan, 12, 9, 18, 20, 1, 16],
+ 'Attendance_Rate': [95, 88, 92, 85, np.nan, 90, 97, 99, 45, 94],
+ 'Exam_Score': [88, 72, 65, 55, 78, 69, 91, 95, 30, 89]
+}
+df = pd.DataFrame(data)
+print(df)
+
+
+# Show missing values
+print("\nMissing Values:\n", df.isnull().sum())
+# Fill missing Age with median
+df['Age'] = df['Age'].fillna(df['Age'].median())
+# Fill missing Hours_Studied and Attendance_Rate with mean
+df['Hours_Studied'] = df['Hours_Studied'].fillna(df['Hours_Studied'].mean())
+df['Attendance_Rate'] = df['Attendance_Rate'].fillna(df['Attendance_Rate'].mean())
+
+
+# Visualize outliers
+sns.boxplot(data=df[['Hours_Studied', 'Attendance_Rate', 'Exam_Score']])
+plt.title("Boxplot - Academic Variables")
+plt.show()
+# Detect and treat outliers using IQR method
+def cap_outliers(series):
+ Q1 = series.quantile(0.25)
+ Q3 = series.quantile(0.75)
+ IQR = Q3 - Q1
+ lower = Q1 - 1.5 * IQR
+ upper = Q3 + 1.5 * IQR
+ return series.clip(lower, upper)
+# Apply outlier capping
+df['Hours_Studied'] = cap_outliers(df['Hours_Studied'])
+df['Exam_Score'] = cap_outliers(df['Exam_Score'])
+df['Attendance_Rate'] = cap_outliers(df['Attendance_Rate'])
+
+
+# Check skewness before
+print("Skewness before:", df['Hours_Studied'].skew())
+# Apply log transformation (+1 to avoid log(0))
+df['Log_Hours_Studied'] = np.log1p(df['Hours_Studied'])
+# Check skewness after
+print("Skewness after:", df['Log_Hours_Studied'].skew())
+# Plot before vs after
+plt.figure(figsize=(10, 4))
+plt.subplot(1, 2, 1)
+sns.histplot(df['Hours_Studied'], kde=True)
+plt.title("Original: Hours_Studied")
+plt.subplot(1, 2, 2)
+sns.histplot(df['Log_Hours_Studied'], kde=True)
+plt.title("Log Transformed: Hours_Studied")
+plt.show()
+
+
+print(df.head())

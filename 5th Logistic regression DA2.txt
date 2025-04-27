@@ -1,0 +1,66 @@
+5th Logistic regression
+
+--------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+___________________________________________________________________________________________
+
+df = pd.read_csv(r'C:\Users\VEDANT\Desktop\Data sci\Social_Network_Ads\Social_Network_Ads.csv
+print(df.head())
+
+#!!!!!!!import the csv filer as I don't have the the link of it
+___________________________________________________________________________________________
+
+X = df[['Age', 'EstimatedSalary']]
+y = df['Purchased']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Feature scaling (important for LR)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+_____________________________________________________________________________________________
+
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+__________________________________________________________________________________________
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+tn, fp, fn, tp = cm.ravel()
+# Metrics
+accuracy = accuracy_score(y_test, y_pred)
+error_rate = 1 - accuracy
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+print("Confusion Matrix:")
+print(cm)
+print(f"True Positives: {tp}")
+print(f"False Positives: {fp}")
+print(f"True Negatives: {tn}")
+print(f"False Negatives: {fn}")
+print("\n--- Metrics ---")
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Error Rate: {error_rate:.2f}")
+print(f"Precision: {precision:.2f}")
+print(f"Recall: {recall:.2f}")
+
+___________________________________________________________________________________________
+
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+_________________________________________________________________________________________

@@ -1,0 +1,46 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+
+————————————
+
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+df = pd.read_csv(url, header=None, names=["SepalLength", "SepalWidth", "PetalLength", "PetalWidth", "Species"])
+print(df.head())
+
+—————————————-
+
+X = df.drop("Species", axis=1)
+y = df["Species"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+print(f"Training data shape: {X_train.shape}")
+print(f"Test data shape: {X_test.shape}”)
+
+————————————-
+
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+—————————————-
+
+y_pred = model.predict(X_test)
+print(f"Predictions: {y_pred}”)
+
+——————————————-
+
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(cm)
+accuracy = accuracy_score(y_test, y_pred)
+error_rate = 1 - accuracy
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"Accuracy: {accuracy}")
+print(f"Error Rate: {error_rate}")
+print(f"Precision (weighted): {precision}")
+print(f"Recall (weighted): {recall}")
+print(f"F1 Score (weighted): {f1}”)
+
+————————————————

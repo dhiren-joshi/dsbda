@@ -1,0 +1,76 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+————————————————-
+
+df = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv')
+df
+
+——————————————————
+
+df.isnull().sum()
+
+—————————————————-
+
+print("datatype of features are:")
+print("sepal_length : ",df["sepal_length"].dtype)
+print("sepal_width : ",df["sepal_width"].dtype)
+print("petal_length : ",df["petal_length"].dtype)
+print("petal_width : ",df["petal_width"].dtype)
+print("flower_name : “,df["species"].dtype)
+
+——————————————————-
+
+sns.histplot(df["sepal_length"],kde=True)
+sns.histplot(df[“sepal_width"],kde=True)
+
+———————————————————
+
+sns.histplot(df[“petal_length"],kde=True)
+
+———————————————
+
+sns.histplot(df[“petal_width"],kde=True)
+
+———————————————-
+
+plt.boxplot(df[“sepal_length"])
+
+———————————————-
+
+plt.boxplot(df[“sepal_width"])
+
+—————————————————-
+
+plt.boxplot(df[“petal_length"])
+
+—————————————————-
+
+plt.boxplot(df[“petal_width"])
+
+—————————————————-
+
+sns.boxplot(x="species", y="sepal_length", hue="species", data=df, palette="Set2", dodge=False)
+plt.title('Sepal Length by Species')
+plt.show()
+
+——————————————————
+
+sns.boxplot(x="species", y="sepal_width", hue="species", data=df, palette="Set2", dodge=False)
+plt.title('Sepal Width by Species')
+plt.show()
+
+———————————————————
+
+sns.boxplot(x="species", y="sepal_width", hue="species", data=df, palette="Set2", dodge=False)
+plt.title('Sepal Width by Species')
+plt.show()
+
+———————————————————
+
+sns.boxplot(x="species", y="petal_width", hue="species", data=df, palette="Set2", dodge=False)
+plt.title('Petal Width by Species')
+plt.show()
+
+———————————————————

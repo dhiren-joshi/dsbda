@@ -1,0 +1,37 @@
+import org.apache.spark.sql.SparkSession
+
+object PrimeNumberChecker {
+
+  // Function to check if a number is prime
+  def isPrime(num: Int): Boolean = {
+    if (num <= 1) return false
+    for (i <- 2 to Math.sqrt(num).toInt) {
+      if (num % i == 0) return false
+    }
+    true
+  }
+
+  def main(args: Array[String]): Unit = {
+    // Initialize SparkSession
+    val spark = SparkSession.builder()
+      .appName("Prime Number Checker")
+      .master("local[*]") // Local mode with all cores
+      .getOrCreate()
+
+    // Sample list of numbers to check
+    val numbers = Seq(1, 2, 3, 4, 5, 10, 13, 15, 17, 20, 23, 24, 29)
+
+    // Parallelizing the numbers to process in distributed manner
+    val numbersRDD = spark.sparkContext.parallelize(numbers)
+
+    // Check if each number is prime
+    val primeNumbersRDD = numbersRDD.filter(num => isPrime(num))
+
+    // Collect and print the prime numbers
+    val primeNumbers = primeNumbersRDD.collect()
+    println(s"Prime numbers: ${primeNumbers.mkString(", ")}")
+
+    // Stop Spark session
+    spark.stop()
+  }
+}

@@ -1,0 +1,35 @@
+import org.apache.spark.sql.SparkSession
+
+object NumberCheck {
+  def main(args: Array[String]): Unit = {
+    
+    // Step 1: Start Spark Session
+    val spark = SparkSession.builder
+      .appName("PositiveNegativeCheck")
+      .master("local[*]") // Use all CPU cores
+      .getOrCreate()
+
+    // Step 2: Sample List of Numbers
+    val numbers = List(-5, 0, 10, 3, -2, 7, -9)
+
+    // Step 3: Create RDD
+    val numbersRDD = spark.sparkContext.parallelize(numbers)
+
+    // Step 4: Map each number to its type
+    val resultRDD = numbersRDD.map(num => {
+      if (num > 0) {
+        s"$num is Positive"
+      } else if (num < 0) {
+        s"$num is Negative"
+      } else {
+        s"$num is Zero"
+      }
+    })
+
+    // Step 5: Collect and Print Results
+    resultRDD.collect().foreach(println)
+
+    // Step 6: Stop Spark Session
+    spark.stop()
+  }
+}

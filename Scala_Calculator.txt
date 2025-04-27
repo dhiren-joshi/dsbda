@@ -1,0 +1,52 @@
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.rdd.RDD
+
+object SparkCalculator {
+
+  // Function to perform arithmetic operations
+  def calculate(a: Double, b: Double, operation: String): Double = {
+    operation match {
+      case "add" => a + b
+      case "subtract" => a - b
+      case "multiply" => a * b
+      case "divide" => if (b != 0) a / b else throw new ArithmeticException("Cannot divide by zero")
+      case _ => throw new IllegalArgumentException("Invalid operation")
+    }
+  }
+
+  def main(args: Array[String]): Unit = {
+    // Initialize SparkSession
+    val spark = SparkSession.builder()
+      .appName("Spark Calculator")
+      .master("local[*]")
+      .getOrCreate()
+
+    // Sample input for calculation (this could be replaced by reading from a file or a user interface)
+    val operations: RDD[String] = spark.sparkContext.parallelize(Seq(
+      "5 add 3",
+      "10 subtract 2",
+      "4 multiply 6",
+      "8 divide 2"
+    ))
+
+    // Parsing the operation string and calculating
+    val result = operations.map(line => {
+      val parts = line.split(" ")
+      val num1 = parts(0).toDouble
+      val operation = parts(1)
+      val num2 = parts(2).toDouble
+      try {
+        val res = calculate(num1, num2, operation)
+        s"Result of $line = $res"
+      } catch {
+        case e: Exception => s"Error in $line: ${e.getMessage}"
+      }
+    })
+
+    // Collecting and printing the results
+    result.collect().foreach(println)
+
+    // Stop SparkSession
+    spark.stop()
+  }
+}

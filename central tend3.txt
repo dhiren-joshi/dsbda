@@ -1,0 +1,16 @@
+import pandas as pd
+# Load Iris dataset
+df = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv')
+# Group by 'species' and calculate summary stats
+summary_stats = df.groupby('species').agg(['mean', 'median', 'min', 'max', 'std'])
+print(summary_stats)
+
+
+species_grouped_petals = df.groupby('species')['petal_length'].apply(list)
+print(species_grouped_petals)
+
+
+for species in df['species'].unique():
+ print(f"\n--- Stats for {species} ---")
+ subset = df[df['species'] == species]
+ print(subset.describe(percentiles=[.25, .5, .75]))

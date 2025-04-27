@@ -1,0 +1,89 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+————————————————
+
+df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+df.describe
+
+————————————————-
+
+df
+————
+
+df.head()
+—————-
+
+df.tail()
+———————
+
+df.isna().sum()
+
+————————-
+
+df.describe()
+
+—————————-
+
+df.fillna(df['Age'].mean(),inplace = True)
+df["Age"] = pd.to_numeric(df["Age"], errors=“coerce")
+
+——————————-
+
+males = df[df["Sex"] == "male"]
+females = df[df["Sex"] == "female"]
+plt.figure(figsize=(10, 5))
+plt.hist(males["Age"],bins=20, label="Males", color="blue", edgecolor='black')
+plt.hist(females["Age"], bins=20,label="Females", color="pink", edgecolor='black')
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.title("Age Distribution by Sex")
+plt.legend()
+plt.show()
+
+————————————-
+
+df[df.select_dtypes(exclude='category').columns] = df.select_dtypes(exclude='category')
+deceased = df[df["Survived"] == 0]
+gender_counts = deceased["Sex"].value_counts()
+plt.bar(gender_counts.index, gender_counts.values, color=['blue', 'pink'])
+plt.xlabel("Gender")
+plt.ylabel("Number of Deaths")
+plt.title("Number of Male vs Female Deaths on the Titanic")
+plt.show()
+
+—————————————-
+
+
+
+survivedM = df[(df["Survived"] == 1) & (df["Sex"] == "male")]
+survivedF = df[(df["Survived"] == 1) & (df["Sex"] == "female")]
+deceasedM = df[(df["Survived"] == 0) & (df["Sex"] == “male")]
+
+———————————————————-
+
+deceasedF = df[(df["Survived"] == 0) & (df["Sex"] == "female")]
+survived_countM = len(survivedM)
+survived_countF = len(survivedF)
+deceased_countM = len(deceasedM)
+deceased_countF = len(deceasedF)
+categories = ["Male Survived", "Female Survived", "Male Deaths", "Female Deaths"]
+values = [survived_countM, survived_countF, deceased_countM, deceased_countF]
+colors = ["blue", "black", "yellow", "red"]
+plt.figure(figsize=(8, 5))
+plt.bar(categories, values, color=colors, alpha=0.7)
+plt.xlabel("State")
+plt.ylabel("Count")
+plt.title("Survival Graph")
+plt.show()
+
+————————————————————
+
+bins = 4
+labels = ['low','medium','high','extreme']
+df['Fare_Range'] = pd.qcut(df['Fare'],q=bins,labels=labels)
+df[[‘Fare','Fare_Range']].head(10)
+
+———————————————————
+
